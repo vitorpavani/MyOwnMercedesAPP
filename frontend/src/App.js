@@ -11,7 +11,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 // import Signup from './pages/Signup';
 // import { isAuthenticated } from './actions/auth';
-// import Dashboard from './pages/Dashboard/index';
+import Dashboard from './pages/Dashboard/index';
 
 function App() {
   return (
@@ -19,12 +19,9 @@ function App() {
       <Switch>
         <Route exact path='/' component={Landing} />
         <Route exact path='/login' component={Login} />
-        {/* <Route exact path='/signup' component={Signup} />
-        <Route exact path='/forget-password' component={ForgetPassword} />
-        <Route
-          path='/reset-password/:resetPasswordToken'
-          component={ResetPassword}
-        /> */}
+        <Route exact path='/dashboard' component={Dashboard} />
+        {/* <Route exact path='/signup' component={Signup} /> */}
+
         {/* <PrivateRoute exact path='/dashboard' component={Dashboard} />
         <PrivateRoute exact path='/dashboard/*' component={Dashboard} /> */}
       </Switch>

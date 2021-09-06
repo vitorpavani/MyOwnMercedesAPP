@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,8 +11,12 @@ import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { InputAdornment, IconButton } from '@material-ui/core';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { login } from '../actions/auth';
 
 function Copyright() {
   return (
@@ -62,6 +67,37 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
+  const history = useHistory();
+  const [message, setMessage] = useState('');
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+
+  const [user, setUser] = useState({});
+
+  const onChangeHandler = (key, newValue) => {
+    console.log(user);
+    setUser({ ...user, [key]: newValue });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    login(user.email, user.password).then(({ data, status }) => {
+      if (status === 200) {
+        //successfully logged in
+        //update the state for the parent component
+        localStorage.setItem('token', data.token);
+        history.push(`/dashboard`);
+      } else {
+        setMessage(data.message);
+        setUser({});
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+      }
+    });
+  };
 
   return (
     <Grid container component='main' className={classes.root}>
@@ -86,6 +122,7 @@ export default function SignInSide() {
               name='email'
               autoComplete='email'
               autoFocus
+              onChange={(e) => onChangeHandler('email', e.target.value)}
             />
             <TextField
               variant='outlined'
@@ -97,6 +134,21 @@ export default function SignInSide() {
               type='password'
               id='password'
               autoComplete='current-password'
+              onChange={(e) => onChangeHandler('password', e.target.value)}
+              InputProps={{
+                // <-- This is where the toggle button is added.
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      aria-label='toggle password visibility'
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <FormControlLabel
               control={<Checkbox value='remember' color='primary' />}
@@ -108,6 +160,7 @@ export default function SignInSide() {
               variant='contained'
               color='primary'
               className={classes.submit}
+              onClick={handleSubmit}
             >
               Sign In
             </Button>
