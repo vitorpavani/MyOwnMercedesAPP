@@ -38,7 +38,6 @@ passport.use(
       passwordField: 'password',
     },
     (username, password, done) => {
-      console.log(username);
       User.findOne({ email: username })
         .then((found) => {
           console.log(found);

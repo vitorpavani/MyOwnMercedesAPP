@@ -23,7 +23,6 @@ router.post('/login', (req, res) => {
     }
 
     const token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-    console.log('token', token);
 
     // generateTokens(user)
     //   .then((tokens) => res.status(200).json(tokens))
